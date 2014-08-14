@@ -1,0 +1,15 @@
+{
+  "name": "grady",
+  "version": "0.0.0",
+  "description": "Grady is a simple grading system that uses email as a message queue for sending tasks to be graded. For use in the Faculty of Mathematics and Informatics in Sofia, Bulgaria",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "github.com/RadoRado",
+  "license": "MIT",
+  "dependencies": {
+    "mail-listener2": "^0.1.7",
+    "mongoose": "^3.8.14"
+  }
+}

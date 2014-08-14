@@ -1,0 +1,12 @@
+{
+    "username": "imap-username",
+    "password": "imap-password",
+    "host": "imap.gmail.com",
+    "port": 993,
+    "attachmentsDirectory": "attachments/",
+    "mailbox": "INBOX",
+    "searchFilter": ["UNSEEN"],
+    "markSeen": true,
+    "fetchUnreadOnStart": true,
+    "mongoConnectionString": "mongodb://localhost/grady"
+}
