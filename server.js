@@ -4,20 +4,8 @@
 var
   config = require('./config'),
   mailListener = require('./modules/maillistener'),
+  Mail = require("./modules/mail"),
   mongoose = require('mongoose'),
-  mailSchema = mongoose.Schema({
-    mailId: String,
-    subject: String,
-    body: String,
-    from: String,
-    fromName: String,
-    receivedDate: Date,
-    attachments: [{
-      filename: String,
-      contents: String
-    }]
-  }),
-  Mail = mongoose.model('Mail', mailSchema),
   StringDecoder = require('string_decoder').StringDecoder;
 
 mongoose.connect(config.mongoConnectionString);
