@@ -4,7 +4,8 @@
 var
   config = require('./config'),
   mailListener = require('./modules/maillistener'),
-  Mail = require("./modules/mail"),
+  Mail = require('./modules/mail'),
+  Queuer = require('./modules/queuer'),
   mongoose = require('mongoose'),
   StringDecoder = require('string_decoder').StringDecoder;
 
@@ -41,8 +42,9 @@ function actOnNewEmail(mail) {
 }
 
 function addTaskToQueue(task) {
-  console.log('Should add task to queue');
+  console.log('Adding to task queue');
   console.log(task);
+  Queuer.addTask(task);
 }
 
 function storeMail(mail) {
@@ -69,13 +71,21 @@ function storeMail(mail) {
     attachments: attachments
   });
 
-  received.save(function(err) {
+  received.save(function(err, savedModel) {
     if(err) {
       console.log('Error on saving mail model!');
       console.log(err);
     }
 
     console.log('Mail saved to database.');
+
+    addTaskToQueue({
+      type: 'grade',
+      data: {
+        status: 'UNGRADED',
+        fetchFromId: savedModel._id
+      }
+    });
   });
 }
 

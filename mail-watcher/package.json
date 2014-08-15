@@ -9,7 +9,9 @@
   "author": "github.com/RadoRado",
   "license": "MIT",
   "dependencies": {
+    "hiredis": "^0.1.17",
     "mail-listener2": "^0.1.7",
-    "mongoose": "^3.8.14"
+    "mongoose": "^3.8.14",
+    "redis": "^0.12.1"
   }
 }
