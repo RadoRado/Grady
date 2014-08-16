@@ -3,7 +3,7 @@ var
   publishClient = redis.createClient(),
   subscribeClient = redis.createClient(),
   getTasksClient = redis.createClient(),
-  threads = require('threads_a_gogo');
+  workerFarm = require('worker-farm');
 
 
 subscribeClient.on("subscribe", function(channel) {
@@ -21,23 +21,18 @@ subscribeClient.on("message", function(channel, message) {
 
     var
       payload = JSON.parse(reply),
-      workerThread = null;
+      worker = null;
 
     switch(payload.type) {
       case "email":
-        workerThread = threads.create();
-        console.log("Emaily thingy");
-        workerThread.load(__dirname + "/" + payload.type + ".js", function() {
-          console.log("Thread loaded");
-          workerThread.emit("workwork", reply);
+        worker = workerFarm(require.resolve("./" + payload.type));
+        worker(reply, function(error, output) {
+          console.log(error, output);
         });
-
-        workerThread.on("work_done", function(message) {
-          console.log(message);
-          workerThread.destroy();
-        });
+        console.log("Worker is working.");
         break
       case "grade":
+        // no implementation for now
         break
     }
 

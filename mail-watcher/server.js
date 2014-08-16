@@ -31,6 +31,7 @@ function actOnNewEmail(mail) {
     addTaskToQueue({
       type: 'email',
       data: {
+        subject: "Nothing to grade",
         to: mail.from[0].address,
         message: 'FYI - Nothing was attached in the email you sent.'
       }
