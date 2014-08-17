@@ -3,10 +3,11 @@
 
 var
   config = require('./config'),
-  mailListener = require('./modules/maillistener'),
-  Mail = require('./modules/mail'),
-  Queuer = require('./modules/queuer'),
+  mailListener = require('./maillistener'),
   mongoose = require('mongoose'),
+  Mail = require('../shared/mail')(mongoose),
+  redis = require("redis"),
+  Queuer = require('../shared/queuer')(redis),
   StringDecoder = require('string_decoder').StringDecoder;
 
 mongoose.connect(config.mongoConnectionString);

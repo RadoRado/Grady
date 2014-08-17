@@ -1,6 +1,6 @@
 var
   MailListener = require("mail-listener2"),
-  config = require("../config"),
+  config = require("./config"),
   mailListener = new MailListener({
     username: config.username,
     password: config.password,
