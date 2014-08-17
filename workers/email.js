@@ -9,9 +9,8 @@ var
       }
   });;
 
-module.exports = function (input, callback) {
+module.exports = function (payload, callback) {
   var
-    payload = JSON.parse(input),
     mailOptions = {
       from: "Grady the Grader " + localConfig.username,
       to: payload.data.to,
@@ -19,8 +18,6 @@ module.exports = function (input, callback) {
       text: payload.data.message,
       html: payload.data.message
     };
-
-  console.log(payload);
 
   transporter.sendMail(mailOptions, function(error, info) {
     callback(error, info);
