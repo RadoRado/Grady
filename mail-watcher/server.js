@@ -5,10 +5,11 @@ var
   config = require('./config'),
   mailListener = require('./maillistener'),
   mongoose = require('mongoose'),
-  Mail = require('../shared/mail')(mongoose),
   redis = require("redis"),
+  Mail = require('../shared/mail')(mongoose),
   Queuer = require('../shared/queuer')(redis),
-  StringDecoder = require('string_decoder').StringDecoder;
+  StringDecoder = require('string_decoder').StringDecoder,
+  Q = require("q");
 
 mongoose.connect(config.mongoConnectionString);
 
@@ -40,7 +41,16 @@ function actOnNewEmail(mail) {
     return;
   }
 
-  storeMail(mail);
+  storeMail(mail)
+    .then(function(mailRecordId) {
+      addTaskToQueue({
+        type: 'grade',
+        data: {
+          status: 'UNGRADED',
+          fetchFromId: mailRecordId
+        }
+      });
+    });
 }
 
 function addTaskToQueue(task) {
@@ -51,6 +61,7 @@ function addTaskToQueue(task) {
 
 function storeMail(mail) {
   var
+    defered = Q.defer();
     attachments = [],
     received = {};
 
@@ -77,18 +88,14 @@ function storeMail(mail) {
     if(err) {
       console.log('Error on saving mail model!');
       console.log(err);
+      defered.reject(err);
     }
 
     console.log('Mail saved to database.');
-
-    addTaskToQueue({
-      type: 'grade',
-      data: {
-        status: 'UNGRADED',
-        fetchFromId: savedModel._id
-      }
-    });
+    defered.resolve(savedModel._id);
   });
+
+  return defered.promise;
 }
 
 mailListener.start();
