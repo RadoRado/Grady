@@ -61,7 +61,7 @@ function addTaskToQueue(task) {
 
 function storeMail(mail) {
   var
-    defered = Q.defer();
+    defered = Q.defer(),
     attachments = [],
     received = {};
 
