@@ -2,6 +2,8 @@ var
   config = require("./config"),
   mongoose = require("mongoose"),
   Problem = require("./problem")(mongoose),
+  Student = require("../shared/student")(mongoose),
+  GradeResult = require("../shared/grade-result")(mongoose),
   path = require("path"),
   gradersByExtension = {
     ".scm": "grader.scm.js"
@@ -41,7 +43,9 @@ module.exports = function (input, callback) {
         filename: problem.filename,
         contents: problem.tests
       }, function(graderResult) {
+        console.log("Grader result for: %s", input.from)
         console.log(graderResult);
+
         callback(null, "Grading stuff");
       });
     })
