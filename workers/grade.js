@@ -40,11 +40,11 @@ module.exports = function (input, callback) {
       }, {
         filename: problem.filename,
         contents: problem.tests
-      }, function(currentGraderOutput) {
-        console.log(currentGraderOutput);
+      }, function(graderResult) {
+        console.log(graderResult);
+        callback(null, "Grading stuff");
       });
     })
   });
 
-  callback(null, "Grading stuff");
 };

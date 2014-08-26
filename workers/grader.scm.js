@@ -3,6 +3,18 @@ var
   GRADE_FOLDER = "scheme-grading-folder",
   COMMAND_BASE = "plt-r5rs";
 
+
+function allPassed(stdout) {
+  return stdout
+          .split("\n")
+          .filter(function(line) {
+            return line != "";
+          })
+          .every(function(line) {
+            return line.indexOf("passed") > -1
+          });
+}
+
 module.exports = function(input, test, callback) {
   test.filename = "test-"+ test.filename;
 
@@ -18,11 +30,14 @@ module.exports = function(input, test, callback) {
   process.chdir(__dirname + "/" + GRADE_FOLDER);
   graderHelper.executeCommand([COMMAND_BASE, test.filename].join(" "))
     .then(function(stdout) {
-      console.log(stdout);
-      callback(null, stdout);
+      callback({
+        passed: allPassed(stdout),
+        stdout: stdout
+      });
     })
     .catch(function(errorObject) {
-      console.log(errorObject);
-      callback(errorObject);
+      callback({
+        error: errorObject
+      });
     });
 };
