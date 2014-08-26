@@ -5,6 +5,7 @@ var
   Student = require("../shared/student")(mongoose),
   GradeResult = require("../shared/grade-result")(mongoose),
   path = require("path"),
+  mongoHelper = require("./mongo.helper"),
   gradersByExtension = {
     ".scm": "grader.scm.js"
   }
@@ -46,7 +47,18 @@ module.exports = function (input, callback) {
         console.log("Grader result for: %s", input.from)
         console.log(graderResult);
 
-        callback(null, "Grading stuff");
+        mongoHelper.fetchModelByProperty(Student, "email", input.from)
+          .then(function(student) {
+            var gradeResult = new GradeResult({
+              studentId: student._id,
+              problemId: problem._id,
+              mailId: input._id,
+              passed: graderResult.passed,
+              output: graderResult.stdout
+            });
+
+            gradeResult.save(callback);
+          });
       });
     })
   });

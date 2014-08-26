@@ -13,7 +13,7 @@ function initModel(mongoose) {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Mail'
       },
-      date: Date,
+      gradeDate: { type: Date, default: Date.now },
       passed: Boolean,
       output: String
     }),
