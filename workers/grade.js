@@ -14,6 +14,8 @@ mongoose.connect(config.mongoConnectionString);
 
 module.exports = function (input, callback) {
 
+  var errorsCount = 0;
+
   input.attachments.forEach(function(attachment) {
     var
       fileExtension = path.extname(attachment.filename),
@@ -22,6 +24,7 @@ module.exports = function (input, callback) {
 
     if(!graderName) {
       console.log("Cannot grade %s", fileExtension);
+      errorsCount += 1;
       return;
     }
 
@@ -57,10 +60,17 @@ module.exports = function (input, callback) {
               output: graderResult.stdout
             });
 
-            gradeResult.save(callback);
+            gradeResult.save(function(err, savedGradeResult) {
+              callback(err, savedGradeResult);
+            });
           });
       });
     })
   });
+
+  if(errorsCount === input.attachments.length) {
+    console.log("Nothing was graded, should callback!");
+    callback(new Error("Nothing was graded."));
+  }
 
 };

@@ -39,8 +39,13 @@ function loadWorker(workerName, payload) {
     }
 
     worker(payload, function(error, output) {
-      if(error) {
-        defer.reject(error);
+      if(error !== null) {
+        console.log(error);
+        defer.reject({
+          worker: worker,
+          error: error
+        });
+        return;
       }
 
       defer.resolve({
@@ -94,12 +99,17 @@ subscribeClient.on("message", function(channel, message) {
       .then(function(workerResult) {
         console.log("Worker is done. Here is his output:");
         console.log(workerResult.output);
-        console.log("Ending worker.");
+
         workerFarm.end(workerResult.worker);
       })
-      .catch(function(error) {
+      .catch(function(errorResult) {
         // TODO: Do something with the error
-        console.log(JSON.stringify(error));
+        if(errorResult.worker && errorResult.error) {
+          workerFarm.end(errorResult.worker);
+          console.log(JSON.stringify(errorResult.error));
+        } else {
+          console.log(JSON.stringify(errorResult));
+        }
       });
   });
 });
