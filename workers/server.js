@@ -43,7 +43,10 @@ function loadWorker(workerName, payload) {
         defer.reject(error);
       }
 
-      defer.resolve(output);
+      defer.resolve({
+        worker: worker,
+        output: output
+      });
     });
 
   return defer.promise;
@@ -70,9 +73,11 @@ subscribeClient.on("message", function(channel, message) {
       .then(function(mail) {
         return loadWorker(payload.type, mail);
       })
-      .then(function(workerOutput) {
+      .then(function(workerResult) {
         console.log("Worker is done. Here is his output:");
-        console.log(workerOutput);
+        console.log(workerResult.output);
+        console.log("Ending worker.");
+        workerFarm.end(workerResult.worker);
       })
       .catch(function(error) {
         // TODO: Do something with the error
