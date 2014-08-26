@@ -1,18 +1,28 @@
 var
   graderHelper = require("./grader.helper"),
-  GRADE_FOLDER = "temp-grading-folder";
+  GRADE_FOLDER = "scheme-grading-folder",
+  COMMAND_BASE = "plt-r5rs";
 
 module.exports = function(input, test, callback) {
-  // write testSource
-  // write inputSource
-  // execute them
-  // collect results
+  test.filename = "test-"+ test.filename;
+
+  var
+    inputPath = [__dirname, GRADE_FOLDER, input.filename].join("/"),
+    outputPath = [__dirname, GRADE_FOLDER, test.filename].join("/");
+
   graderHelper.ensureFolder(GRADE_FOLDER);
-  graderHelper.writeFile(
-            [__dirname, GRADE_FOLDER, input.filename].join("/"),
-            input.contents);
-  graderHelper.writeFile(
-            [__dirname, GRADE_FOLDER, "test-"+ test.filename].join("/"),
-            test.contents);
-  callback("Everying was tested!");
+  graderHelper.writeFile(inputPath, input.contents);
+  graderHelper.writeFile(outputPath, test.contents);
+
+
+  process.chdir(__dirname + "/" + GRADE_FOLDER);
+  graderHelper.executeCommand([COMMAND_BASE, test.filename].join(" "))
+    .then(function(stdout) {
+      console.log(stdout);
+      callback(null, stdout);
+    })
+    .catch(function(errorObject) {
+      console.log(errorObject);
+      callback(errorObject);
+    });
 };
