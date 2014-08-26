@@ -52,6 +52,24 @@ function loadWorker(workerName, payload) {
   return defer.promise;
 }
 
+function getWorkerDataByType(payload) {
+  var
+    defer = Q.defer();
+
+    switch(payload.type) {
+      case "email":
+        defer.resolve(payload.data);
+        break;
+      case "grade":
+        return fetchMailFromMailId(payload.data.fetchFromId);
+        break;
+      default:
+        defer.reject(new Error("Can't handle type " + payload.type));
+    }
+
+    return defer.promise;
+}
+
 mongoose.connect(config.mongoConnectionString);
 
 subscribeClient.on("subscribe", function(channel) {
@@ -69,9 +87,9 @@ subscribeClient.on("message", function(channel, message) {
 
     var payload = JSON.parse(reply);
 
-    fetchMailFromMailId(payload.data.fetchFromId)
-      .then(function(mail) {
-        return loadWorker(payload.type, mail);
+    getWorkerDataByType(payload)
+      .then(function(workerData) {
+        return loadWorker(payload.type, workerData);
       })
       .then(function(workerResult) {
         console.log("Worker is done. Here is his output:");

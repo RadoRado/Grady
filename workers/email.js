@@ -13,10 +13,10 @@ module.exports = function (payload, callback) {
   var
     mailOptions = {
       from: "Grady the Grader " + localConfig.username,
-      to: payload.data.to,
-      subject: payload.data.subject,
-      text: payload.data.message,
-      html: payload.data.message
+      to: payload.to,
+      subject: payload.subject,
+      text: payload.message,
+      html: payload.message
     };
 
   transporter.sendMail(mailOptions, function(error, info) {
