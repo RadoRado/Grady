@@ -27,11 +27,23 @@ module.exports = function (input, callback) {
     Problem.findOne({
       filename: attachment.filename
     }, function(err, problem) {
-      console.log(err, problem);
+
+        if(!problem) {
+          // there is nothing in the database
+          // email the sender
+          // add error
+        }
+      grader = require("./" + graderName);
+      grader({
+        filename: attachment.filename,
+        contents: attachment.contents
+      }, {
+        filename: problem.filename,
+        contents: problem.tests
+      }, function(currentGraderOutput) {
+        console.log(currentGraderOutput);
+      });
     })
-
-//    grader = require("./" + graderName);
-
   });
 
   callback(null, "Grading stuff");
