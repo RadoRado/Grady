@@ -1,7 +1,10 @@
 function initModel(mongoose) {
   var
     problemSchema = mongoose.Schema({
-      filename: String,
+      filename: {
+        type: String,
+        index: true
+      },
       fileset: String,
       tests: String
     }),

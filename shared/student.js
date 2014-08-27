@@ -4,7 +4,10 @@ function initModel(mongoose) {
       name: String,
       facultyNumber: String,
       group: Number,
-      email: String
+      email: {
+        type: String,
+        index: true
+      }
     }),
     Student = mongoose.model('Student', studentSchema);
 

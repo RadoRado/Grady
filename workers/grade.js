@@ -1,7 +1,7 @@
 var
   config = require("./config"),
   mongoose = require("mongoose"),
-  Problem = require("./problem")(mongoose),
+  Problem = require("../shared/problem")(mongoose),
   Student = require("../shared/student")(mongoose),
   GradeResult = require("../shared/grade-result")(mongoose),
   path = require("path"),
